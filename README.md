@@ -1,2 +1,2 @@
 # credit_analytics
-Repository to share credit analytics scripts
+Repository to share credit analytics/reporting scripts
