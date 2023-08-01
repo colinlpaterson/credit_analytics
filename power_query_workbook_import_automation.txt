@@ -1,0 +1,27 @@
+// M Code used to automatically import the correct file into Power Query based on the file path. Note: file path naming convention needs to be consistent.
+
+//Steps In Excel Workbook
+
+//1. Open Power Query Create and create a Blank Query
+//2. Enter the below code in the blank query and rename it fParam
+
+let Parameter=(TableName as text,RowNumber as number) =>
+let
+     Source = Excel.CurrentWorkbook(){[Name=TableName]}[Content],
+     value = Source{RowNumber-1}[Path]
+in
+     value
+in Parameter
+
+//3. Create table in excel on "Folder Path" tab with the file path. Name the table "tableConfig" and name the column with the file path "Path"
+//4. Use this M code in your query
+
+let
+    Source = Excel.Workbook(File.Contents(fParam("tableConfig",1)), null, true),
+   //add transformation steps as needed
+in
+   Source
+
+//5. Use excel's CONCAT() function so that the file path updates based on a cell input (e.g. current date)
+
+//6. Refresh Query
