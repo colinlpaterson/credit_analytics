@@ -1,27 +1,36 @@
-// M Code used to automatically import the correct file into Power Query based on the file path. Note: file path naming convention needs to be consistent.
+// M Code used to automatically import the correct file into Power Query based on the file path.
+// Note: file path naming convention needs to be consistent.
 
-//Steps In Excel Workbook
+// Steps to Implement in Excel Workbook:
 
-//1. Open Power Query Create and create a Blank Query
-//2. Enter the below code in the blank query and rename it fParam
-
-let Parameter=(TableName as text,RowNumber as number) =>
-let
-     Source = Excel.CurrentWorkbook(){[Name=TableName]}[Content],
-     value = Source{RowNumber-1}[Path]
-in
-     value
-in Parameter
-
-//3. Create table in excel on "Folder Path" tab with the file path. Name the table "tableConfig" and name the column with the file path "Path"
-//4. Use this M code in your query
+// 1. Open Power Query and create a Blank Query.
+// 2. Enter the below code in the blank query and rename it fParam.
 
 let
-    Source = Excel.Workbook(File.Contents(fParam("tableConfig",1)), null, true),
-   //add transformation steps as needed
+    Parameter = (TableName as text, RowNumber as number) =>
+    let
+        Source = Excel.CurrentWorkbook(){[Name=TableName]}[Content],
+        value = Source{RowNumber-1}[Path]
+    in
+        value
 in
-   Source
+    Parameter
 
-//5. Use excel's CONCAT() function so that the file path updates based on a cell input (e.g. current date)
+// 3. Create a table in Excel on the "Folder Path" tab with the file paths. Name the table "tableConfig" and name the column with the file path "Path".
+// 4. Use this M code in your new query.
 
-//6. Refresh Query
+let
+    // Get the file path from the tableConfig table using the first row (RowNumber = 1).
+    FilePath = fParam("tableConfig", 1),
+    Source = Excel.Workbook(File.Contents(FilePath), null, true),
+    // Add transformation steps as needed.
+    // For example:
+    // TransformData = Table.TransformColumnTypes(Source, {{"Column1", type text}}),
+    // MoreSteps = Table.AddColumn(TransformData, ...),
+in
+    Source
+
+// 5. Use Excel's CONCATENATE() function or & operator to construct the file path based on a cell input (e.g. current date).
+
+// 6. Refresh Query when needed.
+
